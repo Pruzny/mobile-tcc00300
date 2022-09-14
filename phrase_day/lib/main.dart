@@ -34,14 +34,19 @@ class _MyAppState extends State<MyApp> {
               height: double.infinity,
               alignment: Alignment.center,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   ConstrainedBox(
                     constraints: Styles.textBox,
-                    child: Text(
-                        textAlign: TextAlign.justify,
-                        phrase,
-                        style: Styles.mainText,
-                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                          textAlign: TextAlign.justify,
+                          phrase,
+                          style: Styles.mainText,
+                      ),
+                    )
                   ),
                   Container(
                     alignment: Alignment.topCenter,
