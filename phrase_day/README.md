@@ -4,4 +4,4 @@
 
 **You can check a day pressing its respective button.**
 
-![AppScreen](https://i.imgur.com/jCNXCg9.jpeg)
+![AppScreen](https://i.imgur.com/GL4kfM7.jpg)
