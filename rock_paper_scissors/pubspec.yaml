@@ -1,5 +1,5 @@
 name: rock_paper_scissors
-description: A new Flutter project.
+description: An app of rock paper scissors minigame. Can you win?.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

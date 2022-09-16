@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _text = "Calo";
+  String _myOption = "default";
   var _compOption = "default";
 
   @override
@@ -24,32 +24,47 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           actions: const [],
-          title: Text("Rock-Paper-Scissors")
+          title: Text("Rock-Paper-Scissors", style: Styles.title),
+          backgroundColor: Color.fromARGB(255, 255, 230, 0),
+          centerTitle: true,
         ),
         body: Container(
-          alignment: Alignment.topCenter,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    Text("Computer's option:", style: Styles.label),
-                    Image.asset("images/$_compOption.png", height: 160),
-                  ]
+          decoration: Styles.border,
+          child: Container(
+            decoration: Styles.mainBox,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Text("Enemy's option:", style: Styles.label),
+                      Image.asset("images/$_compOption.png", height: 160),
+                    ]
+                  ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: createButtons(),
+                Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      Text("Your option:", style: Styles.label),
+                      Image.asset("images/$_myOption.png", height: 160),
+                    ]
+                  ),
                 ),
-              ),
-            ],
-          ),
-        )
+                Container(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: createButtons(),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
       ),
     );
   }
@@ -60,12 +75,12 @@ class _MyAppState extends State<MyApp> {
       buttons.add(
         Column(
           children: [
-            Image.asset("images/${option.toLowerCase()}.png", height: 120),
+            Image.asset("images/${option.toLowerCase()}.png", height: 110),
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  _text = option;
-                  _compOption = option.toLowerCase();
+                  _myOption = option.toLowerCase();
+                  _compOption = options[(options.indexOf(option) + 1) % 3].toLowerCase();
                 });
               },
               style: Styles.button,
@@ -87,19 +102,31 @@ const options = [
 ];
 
 class Styles {
+  static BoxDecoration border = BoxDecoration(
+    border: Border.all(width: 10, color: Colors.white),
+    color: Colors.white,
+  );
   static const BoxDecoration mainBox = BoxDecoration(
-    
+    color: Color.fromRGBO(247, 240, 176, 160),
+    borderRadius: BorderRadius.all(Radius.circular(10)),
+  );
+  static const TextStyle title = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontSize: 32,
   );
   static const TextStyle label = TextStyle(
-    fontSize: 30,
+    fontSize: 28,
   );
   static const TextStyle option = TextStyle(
     fontSize: 20,
+    color: Colors.black,
   );
   static ButtonStyle button = ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 255, 230, 0)),
     shape: MaterialStateProperty.all(RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     )),
-    minimumSize: MaterialStateProperty.all(Size(120, 36)),
+    minimumSize: MaterialStateProperty.all(Size(110, 36)),
   );
 }
