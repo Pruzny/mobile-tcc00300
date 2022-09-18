@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +16,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _myOption = "default";
-  var _compOption = "default";
+
+  String _playerOption = "Default";
+  var _compOption = "Default";
+  Widget? _resultBackground;
+  String _resultText = "";
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: "Rock-Paper-Scissors",
       debugShowCheckedModeBanner: false,
@@ -41,7 +51,7 @@ class _MyAppState extends State<MyApp> {
                   child: Column(
                     children: [
                       Text("Enemy's option:", style: Styles.label),
-                      Image.asset("images/$_compOption.png", height: 160),
+                      Image.asset("images/${_compOption.toLowerCase()}.png", height: 120),
                     ]
                   ),
                 ),
@@ -50,20 +60,23 @@ class _MyAppState extends State<MyApp> {
                   child: Column(
                     children: [
                       Text("Your option:", style: Styles.label),
-                      Image.asset("images/$_myOption.png", height: 160),
+                      Image.asset("images/${_playerOption.toLowerCase()}.png", height: 120),
                     ]
                   ),
                 ),
                 Container(
                   alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: createButtons(),
-                  ),
+                  child: Stack(children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: createButtons(),
+                    ),
+                    Container(child: _resultBackground)
+                  ]),
                 ),
               ],
             ),
-          )
+          ),
         ),
       ),
     );
@@ -79,12 +92,13 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  _myOption = option.toLowerCase();
-                  _compOption = options[(options.indexOf(option) + 1) % 3].toLowerCase();
+                  _playerOption = option;
                 });
+                setCompOption();
+                setResult();
               },
-              style: Styles.button,
-              child: Text(option, style: Styles.option),
+              style: Styles.optionButton,
+              child: Text(option, style: Styles.optionText),
             )
           ],
         )
@@ -92,6 +106,68 @@ class _MyAppState extends State<MyApp> {
     }
 
     return buttons;
+  }
+
+  void setCompOption() {
+    _compOption = options[Random().nextInt(3)];
+  }
+
+  void setResult() {
+    calculateResult();
+    setState(() {
+      _resultBackground = Container(
+        width: 400,
+        height: 160,
+        decoration: BoxDecoration(color: Color.fromARGB(255, 253, 249, 211)),
+        child: createResultBox(),
+      );
+    });
+  }
+
+  void calculateResult() {
+    int compIndex = options.indexOf(_compOption);
+    int playerIndex = options.indexOf(_playerOption);
+    String text = "";
+    if (compIndex == playerIndex) {
+      text = "Draw";
+    } else if (compIndex == playerIndex + 1 % 3) {
+      text = "You lose";
+    } else {
+      text = "You win";
+    }
+    setState(() {
+      _resultText = text;
+    });
+  }
+
+  void reset() {
+    setState(() {
+      _resultBackground = null;
+        _playerOption = "default";
+      _compOption = "default";
+    });
+  }
+
+  Center createResultBox() {
+    return Center(
+      child: Container(
+        decoration: Styles.resultBox,
+        width: 200,
+        height: 100,
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_resultText, style: Styles.resultText),
+            ElevatedButton(
+              onPressed: reset,
+              style: Styles.resetButton,
+              child: Text("Play Again", style: Styles.resetText)
+            ),
+          ]
+        ),
+      ),
+    );
   }
 }
 
@@ -107,8 +183,12 @@ class Styles {
     color: Colors.white,
   );
   static const BoxDecoration mainBox = BoxDecoration(
-    color: Color.fromRGBO(247, 240, 176, 160),
+    color: Color.fromARGB(255, 253, 249, 211),
     borderRadius: BorderRadius.all(Radius.circular(10)),
+  );
+  static  BoxDecoration resultBox = BoxDecoration(
+    color: Color.fromARGB(255, 88, 88, 88),
+    borderRadius: BorderRadius.circular(16)
   );
   static const TextStyle title = TextStyle(
     color: Colors.black,
@@ -118,15 +198,29 @@ class Styles {
   static const TextStyle label = TextStyle(
     fontSize: 28,
   );
-  static const TextStyle option = TextStyle(
-    fontSize: 20,
+  static const TextStyle optionText = TextStyle(
+    fontSize: 18,
     color: Colors.black,
   );
-  static ButtonStyle button = ButtonStyle(
+  static const TextStyle resultText = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+  static const TextStyle resetText = TextStyle(
+    fontSize: 16,
+  );
+  static ButtonStyle optionButton = ButtonStyle(
     backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 255, 230, 0)),
     shape: MaterialStateProperty.all(RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     )),
     minimumSize: MaterialStateProperty.all(Size(110, 36)),
+  );
+  static ButtonStyle resetButton = ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 201, 66, 57)),
+    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    )),
   );
 }
