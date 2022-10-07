@@ -130,7 +130,7 @@ class _MyAppState extends State<MyApp> {
     String text = "";
     if (compIndex == playerIndex) {
       text = "Draw";
-    } else if (compIndex == playerIndex + 1 % 3) {
+    } else if (compIndex == (playerIndex + 1) % 3) {
       text = "You lose";
     } else {
       text = "You win";
