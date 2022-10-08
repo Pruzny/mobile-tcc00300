@@ -19,8 +19,10 @@ class _MyAppState extends State<MyApp> {
 
   String _playerOption = "Default";
   var _compOption = "Default";
-  Widget? _resultBackground;
+  bool _hasEnded = false;
   String _resultText = "";
+  int _playerScore = 0;
+  int _compScore = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,14 @@ class _MyAppState extends State<MyApp> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      Text("Enemy's option:", style: Styles.label),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Enemy", style: Styles.label),
+                            Padding(padding: EdgeInsets.only(left: 20)),
+                            Text("$_compScore", style: Styles.score),
+                          ],
+                      ),
                       Image.asset("images/${_compOption.toLowerCase()}.png", height: 120),
                     ]
                   ),
@@ -59,20 +68,24 @@ class _MyAppState extends State<MyApp> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      Text("Your option:", style: Styles.label),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("You", style: Styles.label),
+                            Padding(padding: EdgeInsets.only(left: 20)),
+                            Text("$_playerScore", style: Styles.score),
+                          ],
+                      ),
                       Image.asset("images/${_playerOption.toLowerCase()}.png", height: 120),
                     ]
                   ),
                 ),
                 Container(
                   alignment: Alignment.bottomCenter,
-                  child: Stack(children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: createButtons(),
-                    ),
-                    Container(child: _resultBackground)
-                  ]),
+                  child: SizedBox(
+                    width: 400,
+                    child: _hasEnded ? createResult() : createButtons()
+                  ),
                 ),
               ],
             ),
@@ -82,7 +95,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  List<Widget> createButtons() {
+  Row createButtons() {
     List<Widget> buttons = [];
     for (String option in options) {
       buttons.add(
@@ -95,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                   _playerOption = option;
                 });
                 setCompOption();
-                setResult();
+                _hasEnded = true;
               },
               style: Styles.optionButton,
               child: Text(option, style: Styles.optionText),
@@ -105,23 +118,24 @@ class _MyAppState extends State<MyApp> {
       );
     }
 
-    return buttons;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: buttons,
+    );
   }
 
   void setCompOption() {
     _compOption = options[Random().nextInt(3)];
   }
 
-  void setResult() {
+  Container createResult() {
     calculateResult();
-    setState(() {
-      _resultBackground = Container(
-        width: 400,
-        height: 160,
-        decoration: BoxDecoration(color: Color.fromARGB(255, 253, 249, 211)),
-        child: createResultBox(),
-      );
-    });
+    return Container(
+      width: 400,
+      height: 160,
+      decoration: BoxDecoration(color: Color.fromARGB(255, 253, 249, 211)),
+      child: createResultBox(),
+    );
   }
 
   void calculateResult() {
@@ -131,8 +145,14 @@ class _MyAppState extends State<MyApp> {
     if (compIndex == playerIndex) {
       text = "Draw";
     } else if (compIndex == (playerIndex + 1) % 3) {
+      setState(() {
+        _compScore++;
+      });
       text = "You lose";
     } else {
+      setState(() {
+        _playerScore++;
+      });
       text = "You win";
     }
     setState(() {
@@ -142,9 +162,9 @@ class _MyAppState extends State<MyApp> {
 
   void reset() {
     setState(() {
-      _resultBackground = null;
-        _playerOption = "default";
+      _playerOption = "default";
       _compOption = "default";
+      _hasEnded = false;
     });
   }
 
@@ -197,6 +217,11 @@ class Styles {
   );
   static const TextStyle label = TextStyle(
     fontSize: 28,
+  );
+  static const TextStyle score = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
   );
   static const TextStyle optionText = TextStyle(
     fontSize: 18,
