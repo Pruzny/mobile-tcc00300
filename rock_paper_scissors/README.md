@@ -1,16 +1,14 @@
-# rock_paper_scissors
+# Rock Paper Scissors
 
-A new Flutter project.
+**Minigame for playing rock paper scissors against randomized choices.**
 
-## Getting Started
+**You can chose one option of three and then your enemy will pick a random option too.**
 
-This project is a starting point for a Flutter application.
+## Rules:
+1. Rock > Scissors
+2. Scissors > Paper
+3. Paper > Rock
 
-A few resources to get you started if this is your first Flutter project:
+![StartScreen](https://i.imgur.com/IFyp040.jpg)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![ResultScreen](https://i.imgur.com/numr4N3.jpg)
