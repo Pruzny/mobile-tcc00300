@@ -3,7 +3,7 @@ import 'pages/home.dart';
 
 void main() {
   runApp(const MaterialApp(
-    title: "Guessing App",
+    title: "Guessing Game",
     debugShowCheckedModeBanner: false,
     home: Home(),
   ));
