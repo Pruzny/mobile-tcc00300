@@ -1,6 +1,6 @@
 {
-    "name": "guessing_app",
-    "short_name": "guessing_app",
+    "name": "guessing_game",
+    "short_name": "guessing_game",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

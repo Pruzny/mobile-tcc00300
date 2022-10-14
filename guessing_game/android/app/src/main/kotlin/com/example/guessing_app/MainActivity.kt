@@ -1,4 +1,4 @@
-package com.example.guessing_app
+package com.example.guessing_game
 
 import io.flutter.embedding.android.FlutterActivity
 
