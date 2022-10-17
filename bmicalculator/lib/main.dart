@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:math';
 
 void main() {
@@ -20,6 +21,7 @@ class _MyAppState extends State<MyApp> {
     style: Styles.resultText,
     textAlign: TextAlign.center,
   );
+  String _bmi = "";
 
   @override
   Widget build(BuildContext context) {
@@ -38,79 +40,81 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Container(
           decoration: Styles.mainBox,
-          child: Center(child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FractionallySizedBox(
-                widthFactor: 0.9,
-                child: Container(
-                  decoration: Styles.widgetBox,
-                  padding: EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                      Container(
+          child: Center(child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FractionallySizedBox(
+                  widthFactor: 0.9,
+                  child: Container(
+                    decoration: Styles.widgetBox,
+                    padding: EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        Container(
+                            width: double.infinity,
+                            decoration: Styles.inputBox,
+                            padding: EdgeInsets.only(left: 20),
+                            child: TextField(
+                              controller: _weightController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: "Weight",
+                                labelStyle: Styles.labelText,
+                                hintText: "Ex: 59.9",
+                                hintStyle: Styles.placeholderText,
+                                focusColor: Color.fromRGBO(255, 128, 48, 1),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
+                                  color: Color.fromRGBO(255, 128, 48, 1),
+                                  width: 2,
+                                )),
+                              ),
+                              cursorColor: Color.fromRGBO(255, 128, 48, 1),
+                              style: Styles.placeholderText,
+                            )
+                          ),
+                        space,
+                        Container(
+                            decoration: Styles.inputBox,
+                            padding: EdgeInsets.only(left: 20),
+                            child: TextField(
+                              controller: _heightController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: "Height",
+                                labelStyle: Styles.labelText,
+                                hintText: "Ex: 1.68",
+                                hintStyle: Styles.placeholderText,
+                                focusColor: Color.fromRGBO(255, 128, 48, 1),
+                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
+                                  color: Color.fromRGBO(255, 128, 48, 1),
+                                  width: 2,
+                                )),
+                              ),
+                              cursorColor: Color.fromRGBO(255, 128, 48, 1),
+                              style: Styles.placeholderText,
+                            )
+                          ),
+                        space,
+                        SizedBox(
                           width: double.infinity,
-                          decoration: Styles.inputBox,
-                          padding: EdgeInsets.only(left: 20),
-                          child: TextField(
-                            controller: _weightController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Weight",
-                              labelStyle: Styles.labelText,
-                              hintText: "Ex: 59.9",
-                              hintStyle: Styles.placeholderText,
-                              focusColor: Color.fromRGBO(255, 128, 48, 1),
-                              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
-                                color: Color.fromRGBO(255, 128, 48, 1),
-                                width: 2,
-                              )),
-                            ),
-                            cursorColor: Color.fromRGBO(255, 128, 48, 1),
-                            style: Styles.placeholderText,
-                          )
+                          child: ElevatedButton(
+                            onPressed: calculateBmi,
+                            style: Styles.calculateButton,
+                            child: Text(
+                              "Calculate",
+                              style: Styles.calculateText,
+                            )
+                          ),
                         ),
-                      space,
-                      Container(
-                          decoration: Styles.inputBox,
-                          padding: EdgeInsets.only(left: 20),
-                          child: TextField(
-                            controller: _heightController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "Height",
-                              labelStyle: Styles.labelText,
-                              hintText: "Ex: 1.68",
-                              hintStyle: Styles.placeholderText,
-                              focusColor: Color.fromRGBO(255, 128, 48, 1),
-                              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(
-                                color: Color.fromRGBO(255, 128, 48, 1),
-                                width: 2,
-                              )),
-                            ),
-                            cursorColor: Color.fromRGBO(255, 128, 48, 1),
-                            style: Styles.placeholderText,
-                          )
-                        ),
-                      space,
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: calculateBmi,
-                          style: Styles.calculateButton,
-                          child: Text(
-                            "Calculate",
-                            style: Styles.calculateText,
-                          )
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              space,
-              _result,
-            ],
+                space,
+                _result,
+              ],
+            ),
           )),
         ),
       ),
@@ -121,19 +125,22 @@ class _MyAppState extends State<MyApp> {
       String? weight = _weightController.text;
       String? height = _heightController.text;
       if (weight.isNotEmpty && height.isNotEmpty) {
+        _bmi = (double.parse(weight)/pow(double.parse(height), 2)).toStringAsFixed(2);
         _result = Container(
           decoration: Styles.widgetBox,
           padding: EdgeInsets.all(30),
           child: Column(
             children: [
               Text(
-                "Your BMI is\n${(double.parse(weight)/pow(double.parse(height), 2)).toStringAsFixed(2)}",
+                "Your BMI is\n$_bmi",
                 style: Styles.resultText,
                 textAlign: TextAlign.center,
               ),
               space,
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Share.share("My BMI is $_bmi");
+                },
                 style: Styles.shareButton,
                 child: Text("Share"),
               ),
