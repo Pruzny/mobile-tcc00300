@@ -43,10 +43,8 @@ class _GeneralState extends State<General> {
         if (snapshot.hasData) {
           mainScreen = Container(
             decoration: const BoxDecoration(color: Color(0xff81749c)),
-            child: SingleChildScrollView(
-              child: Column(
-                children: snapshot.data!
-              ),
+            child: ListView(
+              children: snapshot.data!
             ),
           );
         } else if (snapshot.hasError) {
