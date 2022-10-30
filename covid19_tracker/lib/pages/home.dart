@@ -1,4 +1,10 @@
+import 'package:covid19_tracker/pages/general.dart';
+import 'package:covid19_tracker/pages/brazil.dart';
+import 'package:covid19_tracker/pages/country.dart';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 
 class Home extends StatefulWidget {
@@ -14,7 +20,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "COVID-19 Tracker",
+          'COVID-19 Tracker',
           style: Styles.title,
         ),
         centerTitle: true,
@@ -28,11 +34,47 @@ class _HomeState extends State<Home> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: Styles.itemBox,
+              ElevatedButton(
+                onPressed: () {
+                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1/countries');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => General(result: result))
+                  );
+                },
+                style: Styles.itemButton,
                 child: const Text(
-                  "Home",
+                  'General',
+                  style: Styles.itemText,
+                )
+              ),
+              const Padding(padding: EdgeInsets.all(8)),
+              ElevatedButton(
+                onPressed: () {
+                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Brazil(result: result))
+                  );
+                },
+                style: Styles.itemButton,
+                child: const Text(
+                  'Brazil',
+                  style: Styles.itemText,
+                )
+              ),
+              const Padding(padding: EdgeInsets.all(8)),
+              ElevatedButton(
+                onPressed: () {
+                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Country(result: result))
+                  );
+                },
+                style: Styles.itemButton,
+                child: const Text(
+                  'Country',
                   style: Styles.itemText,
                 )
               ),
@@ -42,11 +84,21 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Future<List<dynamic>> getData(String url) async {
+    http.Response response = await http.get(Uri.parse(url));
+    
+    if (response.statusCode.toString() == "200") {
+      return json.decode(response.body)["data"];
+    }
+
+    return List.empty();
+  }
 }
 
 class Styles {
   static const TextStyle title = TextStyle(
-    fontSize: 28,
+    fontSize: 38,
     fontWeight: FontWeight.bold
   );
   static BoxDecoration itemBox = BoxDecoration(
@@ -55,7 +107,11 @@ class Styles {
   );
   static const TextStyle itemText = TextStyle(
     color: Colors.white,
-    fontSize: 16,
+    fontSize: 40,
+  );
+  static const itemButton = ButtonStyle(
+    backgroundColor: MaterialStatePropertyAll(Colors.black54),
+    minimumSize: MaterialStatePropertyAll(Size(180, 60)),
   );
 }
 
