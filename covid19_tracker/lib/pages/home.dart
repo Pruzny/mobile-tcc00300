@@ -60,17 +60,7 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Brazil(args: Args(
-                      title: 'Brazil',
-                      url: 'https://covid19-brazil-api.now.sh/api/report/v1',
-                      labels: [
-                        'state',
-                        'cases',
-                        'deaths',
-                        'suspects',
-                        'refuses',
-                      ],
-                    )))
+                    MaterialPageRoute(builder: (context) => const Brazil())
                   );
                 },
                 style: Styles.itemButton,
@@ -124,7 +114,7 @@ class Styles {
   );
   static const itemButton = ButtonStyle(
     backgroundColor: MaterialStatePropertyAll(Colors.black54),
-    minimumSize: MaterialStatePropertyAll(Size(180, 60)),
+    minimumSize: MaterialStatePropertyAll(Size(200, 60)),
   );
 }
 

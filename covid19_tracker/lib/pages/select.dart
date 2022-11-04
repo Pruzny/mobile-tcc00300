@@ -30,7 +30,7 @@ class _SelectState extends State<Select> {
             if (snapshot.hasData) {
               List<dynamic> result = snapshot.data!;
               List<String> names = getNames(result);
-              String? starter = widget.args.preItem;
+              String title = widget.args.labels[0];
               return Column(
                 children: [
                   Align(
@@ -60,7 +60,7 @@ class _SelectState extends State<Select> {
                                     child: Text(item),
                                   ),
                                 ).toList(),
-                            value: selectedItem ?? starter,
+                            value: selectedItem ?? widget.args.preItem,
                             onChanged: (String? item) {
                               setState(() {
                                 selectedItem = item;
@@ -85,7 +85,8 @@ class _SelectState extends State<Select> {
                       ),
                     ),
                   ),
-                  widget.args.preItem != null && selectedItem == null ? createItem(widget.args.labels, result.firstWhere((element) => element["country"] == widget.args.preItem), 0) : (selectedItem != null && result.isNotEmpty ? createItem(widget.args.labels, result.firstWhere((element) => element["country"] == selectedItem), 0) : const SizedBox()),
+                  widget.args.preItem != null && selectedItem == null ? createItem(widget.args.labels, result.firstWhere((element) => element[title] == widget.args.preItem), 0) :
+                    (selectedItem != null && result.isNotEmpty ? createItem(widget.args.labels, result.firstWhere((element) => element[title] == selectedItem), 0) : const SizedBox()),
                 ]
               );
             }
@@ -116,6 +117,7 @@ class _SelectState extends State<Select> {
     for (Map map in data) {
       items.add(map[widget.args.labels[0]]);
     }
+    items.sort();
 
     return items;
   }

@@ -76,18 +76,20 @@ class _GeneralState extends State<General> {
   }
 
   Future<List<Widget>> createItems() async {
-    Future<List<dynamic>> result = widget.args.getData();
+    List<dynamic> result = await widget.args.getData();
+    String title = widget.args.labels[0];
+    result.sort(((a, b) => a[title].compareTo(b[title])));
     Container divider = Container(
       decoration: const BoxDecoration(color: Colors.black),
       height: 2,
     );
     List<Widget> items = [divider];
     int count = 0;
-    for (Map<String, dynamic> map in await result) {
+    for (Map<String, dynamic> map in result) {
       items.add(
         InkWell(
           onTap: () {
-            widget.args.preItem = map[widget.args.labels[0]];
+            widget.args.preItem = map[title];
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Select(args: widget.args)),
