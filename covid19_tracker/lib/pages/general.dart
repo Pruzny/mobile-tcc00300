@@ -1,4 +1,5 @@
 import 'package:covid19_tracker/pages/home.dart';
+import 'package:covid19_tracker/pages/select.dart';
 import 'package:flutter/material.dart';
 
 class General extends StatefulWidget {
@@ -84,7 +85,16 @@ class _GeneralState extends State<General> {
     int count = 0;
     for (Map<String, dynamic> map in await result) {
       items.add(
-        createItem(widget.args.labels, map, count)
+        InkWell(
+          onTap: () {
+            widget.args.preItem = map[widget.args.labels[0]];
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Select(args: widget.args)),
+            );
+          },
+          child: IntrinsicHeight(child: createItem(widget.args.labels, map, count)),
+        )
       );
       items.add(divider);
       count++;

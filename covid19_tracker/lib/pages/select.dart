@@ -85,7 +85,7 @@ class _SelectState extends State<Select> {
                       ),
                     ),
                   ),
-                  selectedItem != null && result.isNotEmpty ? createItem(widget.args.labels, result.firstWhere((element) => element["country"] == selectedItem), 0) : const SizedBox(),
+                  widget.args.preItem != null && selectedItem == null ? createItem(widget.args.labels, result.firstWhere((element) => element["country"] == widget.args.preItem), 0) : (selectedItem != null && result.isNotEmpty ? createItem(widget.args.labels, result.firstWhere((element) => element["country"] == selectedItem), 0) : const SizedBox()),
                 ]
               );
             }
