@@ -1,6 +1,6 @@
 import 'package:covid19_tracker/pages/general.dart';
 import 'package:covid19_tracker/pages/brazil.dart';
-import 'package:covid19_tracker/pages/country.dart';
+import 'package:covid19_tracker/pages/select.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -36,10 +36,17 @@ class _HomeState extends State<Home> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1/countries');
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => General(result: result))
+                    MaterialPageRoute(builder: (context) => General(args: Args(
+                      title: 'General',
+                      url: 'https://covid19-brazil-api.now.sh/api/report/v1/countries',
+                      labels: [
+                        'country',
+                        'confirmed',
+                        'deaths'
+                      ],
+                    )))
                   );
                 },
                 style: Styles.itemButton,
@@ -51,10 +58,19 @@ class _HomeState extends State<Home> {
               const Padding(padding: EdgeInsets.all(8)),
               ElevatedButton(
                 onPressed: () {
-                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1');
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Brazil(result: result))
+                    MaterialPageRoute(builder: (context) => Brazil(args: Args(
+                      title: 'Brazil',
+                      url: 'https://covid19-brazil-api.now.sh/api/report/v1',
+                      labels: [
+                        'state',
+                        'cases',
+                        'deaths',
+                        'suspects',
+                        'refuses',
+                      ],
+                    )))
                   );
                 },
                 style: Styles.itemButton,
@@ -66,10 +82,17 @@ class _HomeState extends State<Home> {
               const Padding(padding: EdgeInsets.all(8)),
               ElevatedButton(
                 onPressed: () {
-                  Future<List<dynamic>> result = getData('https://covid19-brazil-api.now.sh/api/report/v1');
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Country(result: result))
+                    MaterialPageRoute(builder: (context) => Select(args: Args(
+                      title: 'Country',
+                      url: 'https://covid19-brazil-api.vercel.app/api/report/v1/countries',
+                      labels: [
+                        'country',
+                        'confirmed',
+                        'deaths'
+                      ],
+                    )))
                   );
                 },
                 style: Styles.itemButton,
@@ -83,16 +106,6 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  Future<List<dynamic>> getData(String url) async {
-    http.Response response = await http.get(Uri.parse(url));
-    
-    if (response.statusCode.toString() == "200") {
-      return json.decode(response.body)["data"];
-    }
-
-    return List.empty();
   }
 }
 
@@ -113,6 +126,28 @@ class Styles {
     backgroundColor: MaterialStatePropertyAll(Colors.black54),
     minimumSize: MaterialStatePropertyAll(Size(180, 60)),
   );
+}
+
+class Args {
+  final String title;
+  final String url;
+  final List<String> labels;
+  String? preItem;
+
+  Args({required this.title, required this.url, required this.labels, this.preItem});
+
+  Future<List<dynamic>> getData() async {
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode.toString() == '200') {
+      return json.decode(response.body)['data'];
+    }
+
+    return List.empty();
+  }
+
+  static String capitalize(String str) {
+    return str.isNotEmpty ? str[0].toUpperCase() + str.substring(1) : "";
+  }
 }
 
 // #81749c
