@@ -1,5 +1,5 @@
 name: covid19_tracker
-description: A new Flutter project.
+description: COVID-19 informations with filters.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
