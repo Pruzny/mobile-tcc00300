@@ -28,7 +28,37 @@ class _BrazilState extends State<Brazil> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  DateTime? date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime(2020, 01, 30),
+                    firstDate: DateTime(2020, 01, 30),
+                    lastDate: DateTime.now(),
+                    builder: (context, child) {
+                      return Theme(
+                        data: ThemeData.dark(),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (date != null) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => General(args: Args(
+                        title: '${date.day}/${date.month}/${date.year}',
+                        url: 'https://covid19-brazil-api.now.sh/api/report/v1/brazil/${date.toString().split(' ')[0].replaceAll('-', '')}',
+                        labels: [
+                          'state',
+                          'cases',
+                          'deaths',
+                          'suspects',
+                          'refuses',
+                        ],
+                      )))
+                    );
+                  }
+                },
                 style: Styles.itemButton,
                 child: const Text(
                   'Date',
