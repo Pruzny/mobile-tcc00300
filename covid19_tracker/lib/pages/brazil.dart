@@ -100,7 +100,7 @@ class _BrazilState extends State<Brazil> {
                       labels: [
                         'state',
                         'cases',
-                        'deaths'
+                        'deaths',
                         'suspects',
                         'refuses',
                       ],
