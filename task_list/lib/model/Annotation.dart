@@ -6,6 +6,14 @@ class Annotation {
 
   Annotation(this.title, this.description, this.data);
 
+
+  Annotation.fromMap(Map map) {
+    this.id = map["id"];
+    this.title = map["title"];
+    this.description = map["description"];
+    this.data = map["data"];
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "title": this.title,

@@ -55,5 +55,39 @@ class AnnotationHelper {
     return result;
 
   }
+
+  getAnnotations() async {
+    var database = await db;
+
+    String sql = "SELECT * FROM $tableName ORDER BY data DESC";
+    List annotations = await database!.rawQuery(sql);
+
+    return annotations;
+  }
   
+
+  Future<int> deleteAnnotation(int id) async {
+    var database = await db;
+
+    int result = await database!.delete(
+      tableName,
+      where: "id = ?",
+      whereArgs: [id]
+    );
+
+    return result;
+  }
+
+  Future<int> updateAnnotation(Annotation annotation) async {
+    var database = await db;
+
+    int result = await database!.update(
+      tableName,
+      annotation.toMap(),
+      where: "id = ?",
+      whereArgs: [annotation.id]
+    );
+
+    return result;
+  }
 }
