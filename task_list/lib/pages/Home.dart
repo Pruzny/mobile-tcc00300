@@ -181,84 +181,87 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("Task List"),
         centerTitle: true,
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: const Color(0xff1693a7),
       ),
-      body: Column(
-        children: [
-           Expanded (
-            child: ReorderableListView.builder(
-              proxyDecorator: proxyDecorator,
-              onReorder: (int oldIndex, int newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  Annotation item = annotations.removeAt(oldIndex);
-                  annotations.insert(newIndex, item);
-                });
-                for (int i = 0; i < annotations.length; i++) {
-                  Annotation annotation = annotations[i];
-                  annotation.priority = i;
-                  _db.updateAnnotation(annotation);
-                }
-              },
-              itemCount: annotations.length,
-              itemBuilder: (context, index) {
-                final item = annotations[index];
-
-                return Dismissible(
-                  background: leftBackground(),
-                  secondaryBackground: rightBackground(),
-                  key: Key(item.data!),
-                  confirmDismiss: (direction) async {
-                    if (direction == DismissDirection.startToEnd) {
-                      _showDismissConfirmation(index);
-                    } else {
-                      _showRegisterScreen(annotation: item);
+      body: ColoredBox(
+        color: const Color(0xfff8fcc1),
+        child: Column(
+          children: [
+             Expanded (
+              child: ReorderableListView.builder(
+                proxyDecorator: proxyDecorator,
+                onReorder: (int oldIndex, int newIndex) {
+                  setState(() {
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
                     }
-                    return null;
-                  },
-                  child: ListTile(
-                    title: Text(item.title!),
-                    subtitle: Text("${_formatData(item.data!)} - ${item.description}"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showRegisterScreen(annotation: item);
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(right: 16),
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.green,
+                    Annotation item = annotations.removeAt(oldIndex);
+                    annotations.insert(newIndex, item);
+                  });
+                  for (int i = 0; i < annotations.length; i++) {
+                    Annotation annotation = annotations[i];
+                    annotation.priority = i;
+                    _db.updateAnnotation(annotation);
+                  }
+                },
+                itemCount: annotations.length,
+                itemBuilder: (context, index) {
+                  final item = annotations[index];
+      
+                  return Dismissible(
+                    background: leftBackground(),
+                    secondaryBackground: rightBackground(),
+                    key: Key(item.data!),
+                    confirmDismiss: (direction) async {
+                      if (direction == DismissDirection.startToEnd) {
+                        _showDismissConfirmation(index);
+                      } else {
+                        _showRegisterScreen(annotation: item);
+                      }
+                      return null;
+                    },
+                    child: ListTile(
+                      title: Text(item.title!),
+                      subtitle: Text("${_formatData(item.data!)} - ${item.description}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showRegisterScreen(annotation: item);
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Icon(
+                                Icons.edit,
+                                color: Color(0xff4caf50),
+                              ),
                             ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            _removeAnnotation(item.id);
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(right: 0),
-                            child: Icon(
-                              Icons.remove_circle,
-                              color: Colors.red,
+                          GestureDetector(
+                            onTap: () {
+                              _removeAnnotation(item.id);
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 0),
+                              child: Icon(
+                                Icons.remove_circle,
+                                color: Color(0xffcc0c39),
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  );
+                }
+              )
             )
-          )
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xff4caf50),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),  
         onPressed: () => _showRegisterScreen(),
@@ -268,7 +271,7 @@ class _HomeState extends State<Home> {
 
   Widget leftBackground() {
     return Container(
-      color: Colors.red,
+      color: const Color(0xffcc0c39),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Row(
@@ -297,7 +300,7 @@ class _HomeState extends State<Home> {
 
   Widget rightBackground() {
     return Container(
-      color: Colors.green,
+      color: const Color(0xff4caf50),
       child: Align(
         alignment: Alignment.centerRight,
         child: Row(
@@ -332,8 +335,8 @@ class _HomeState extends State<Home> {
         final double elevation = lerpDouble(0, 6, animValue)!;
         return Material(
           elevation: elevation,
-          color: Colors.lightGreenAccent,
-          shadowColor: Colors.greenAccent,
+          color: const Color(0xffc8cf02),
+          shadowColor: const Color(0xff1693a7),
           child: child,
         );
       },
@@ -341,3 +344,10 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+
+// #cc0c39
+// #4caf50
+// #c8cf02
+// #f8fcc1
+// #1693a7
