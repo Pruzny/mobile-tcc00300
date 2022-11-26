@@ -6,7 +6,7 @@ import '../model/Annotation.dart';
 class AnnotationHelper {
   static final _annotationHelper = AnnotationHelper.internal();
   static Database? _db;
-  static final String tableName = "annotation";
+  static const String tableName = "annotation";
 
   AnnotationHelper.internal();
 
@@ -26,7 +26,8 @@ class AnnotationHelper {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title VARCHAR,
       description TEXT,
-      data DATETIME
+      date DATETIME,
+      priority INTEGER
     );
     """;
 
@@ -58,8 +59,7 @@ class AnnotationHelper {
 
   getAnnotations() async {
     var database = await db;
-
-    String sql = "SELECT * FROM $tableName ORDER BY data DESC";
+    String sql = "SELECT * FROM $tableName ORDER BY priority ASC";
     List annotations = await database!.rawQuery(sql);
 
     return annotations;

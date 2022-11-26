@@ -3,27 +3,27 @@ class Annotation {
   String? title;
   String? description;
   String? data;
+  int? priority;
 
-  Annotation(this.title, this.description, this.data);
+  Annotation(this.title, this.description, this.data, this.priority);
 
 
   Annotation.fromMap(Map map) {
     this.id = map["id"];
     this.title = map["title"];
     this.description = map["description"];
-    this.data = map["data"];
+    this.data = map["date"];
+    this.priority = map["priority"];
   }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "title": this.title,
       "description": this.description,
-      "data": this.data
+      "date": this.data,
+      "priority": this.priority,
     };
 
-    /*if (map["id"] != null) {
-      map["id"] = this.id;
-    }*/
     map["id"] ??= this.id;
 
     return map;

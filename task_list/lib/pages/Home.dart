@@ -3,6 +3,7 @@ import 'package:task_list/helper/AnnotationHelper.dart';
 import 'package:task_list/model/Annotation.dart';
 import "package:intl/intl.dart";
 import "package:intl/date_symbol_data_local.dart";
+import "dart:ui";
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,24 +19,6 @@ class _HomeState extends State<Home> {
   final _db = AnnotationHelper();
   List<Annotation> annotations = [];
 
-  void _insertAnnotation() async{
-
-    String title = titleController.text;
-    String description = descriptionController.text;
-
-    Annotation annotation = Annotation(
-      title, description, 
-      DateTime.now().toString()
-    );
-
-    int result = await _db.insertAnnotation(annotation);
-
-    titleController.clear();
-    descriptionController.clear();
-
-    _getAnnotations();
-  }
-
   void _insertUpdateAnnotation({Annotation? selectedAnnotation}) async{
 
     String title = titleController.text;
@@ -43,8 +26,9 @@ class _HomeState extends State<Home> {
 
     if (selectedAnnotation == null) {
       Annotation annotation = Annotation(
-        title, description, 
-        DateTime.now().toString()
+        title, description,
+        DateTime.now().toString(),
+        annotations.isNotEmpty ? annotations.last.priority! + 1 : 1
       );
 
       int result = await _db.insertAnnotation(annotation);
@@ -203,70 +187,74 @@ class _HomeState extends State<Home> {
         children: [
            Expanded (
             child: ReorderableListView.builder(
-                onReorder: (int oldIndex, int newIndex) {
-                  // TODO
-                  setState(() {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
+              proxyDecorator: proxyDecorator,
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  Annotation item = annotations.removeAt(oldIndex);
+                  annotations.insert(newIndex, item);
+                });
+                for (int i = 0; i < annotations.length; i++) {
+                  Annotation annotation = annotations[i];
+                  annotation.priority = i;
+                  _db.updateAnnotation(annotation);
+                }
+              },
+              itemCount: annotations.length,
+              itemBuilder: (context, index) {
+                final item = annotations[index];
+
+                return Dismissible(
+                  background: leftBackground(),
+                  secondaryBackground: rightBackground(),
+                  key: Key(item.data!),
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.startToEnd) {
+                      _showDismissConfirmation(index);
+                    } else {
+                      _showRegisterScreen(annotation: item);
                     }
-                    Annotation item = annotations.removeAt(oldIndex);
-                    annotations.insert(newIndex, item);
-                  });
-
-                },
-                itemCount: annotations.length,
-                itemBuilder: (context, index) {
-                  final item = annotations[index];
-
-                  return Dismissible(
-                    background: leftBackground(),
-                    secondaryBackground: rightBackground(),
-                    key: Key(item.data!),
-                    confirmDismiss: (direction) async {
-                      if (direction == DismissDirection.startToEnd) {
-                        _showDismissConfirmation(index);
-                      } else {
-                        _showRegisterScreen(annotation: item);
-                      }
-                      return null;
-                    },
-                    child: ListTile(
-                      title: Text(item.title!),
-                      subtitle: Text("${_formatData(item.data!)} - ${item.description}"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              _showRegisterScreen(annotation: item);
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(right: 16),
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.green,
-                              ),
+                    return null;
+                  },
+                  child: ListTile(
+                    title: Text(item.title!),
+                    subtitle: Text("${_formatData(item.data!)} - ${item.description}"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showRegisterScreen(annotation: item);
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 16),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.green,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              _removeAnnotation(item.id);
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(right: 0),
-                              child: Icon(
-                                Icons.remove_circle,
-                                color: Colors.red,
-                              ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _removeAnnotation(item.id);
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 0),
+                            child: Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-                  );
-                }
-              )
-           )
+                  ),
+                );
+              }
+            )
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -333,6 +321,23 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget proxyDecorator (Widget child, int index, Animation<double> animation) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final double animValue = Curves.easeInOut.transform(animation.value);
+        final double elevation = lerpDouble(0, 6, animValue)!;
+        return Material(
+          elevation: elevation,
+          color: Colors.lightGreenAccent,
+          shadowColor: Colors.greenAccent,
+          child: child,
+        );
+      },
+      child: child,
     );
   }
 }
