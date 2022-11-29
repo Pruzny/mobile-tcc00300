@@ -1,16 +1,13 @@
-# task_list
+# Task List
 
-A new Flutter project.
+**App for tasks and notes management.**
 
-## Getting Started
+You can manage the data using CRUD operations and also drag items to reorder them.
 
-This project is a starting point for a Flutter application.
+Swipe to delete or edit tasks.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![HomeScreen](https://i.imgur.com/GSL1D1O.jpg)
+![AddScreen](https://i.imgur.com/XXYW1pG.jpg)
+![MoveScreen](https://i.imgur.com/VcuEUVv.jpg)
+![DragRight](https://i.imgur.com/rIi19Jr.jpg)
+![DragLeft](https://i.imgur.com/kSK9hY2.jpg)
