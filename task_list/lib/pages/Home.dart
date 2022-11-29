@@ -261,7 +261,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xff4caf50),
+        backgroundColor: const Color(0xff1693a7),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),  
         onPressed: () => _showRegisterScreen(),
