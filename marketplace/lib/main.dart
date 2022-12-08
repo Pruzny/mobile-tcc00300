@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/pages/Home.dart';
+import 'package:marketplace/pages/Login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: const Login(),
     );
   }
 }

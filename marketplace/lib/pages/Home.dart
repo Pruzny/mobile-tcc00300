@@ -3,7 +3,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final VoidCallback signOut;
+  const Home({super.key, required this.signOut});
 
   @override
   State<Home> createState() => _HomeState();
@@ -16,11 +17,26 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("Marketplace"),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              signOut();
+            },
+            icon: Icon(Icons.lock_open),
+          )
+        ],
       ),
+      
       body: Container(
         alignment: Alignment.center,
-        child: const Text("Login"),
+        child: const Text("Home"),
       ),
     );
+  }
+
+  signOut() {
+    setState(() {
+      widget.signOut();
+    });
   }
 }
