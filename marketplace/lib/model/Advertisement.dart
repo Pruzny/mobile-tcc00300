@@ -3,12 +3,13 @@ class Advertisement {
   String? state;
   String? category;
   String? title;
-  String? price;
+  double? price;
   String? telephone;
   String? description;
   var photo;
+  int? user;
 
-  Advertisement({required this.category, required this.title, required this.price, required this.telephone, required this.description, this.photo});
+  Advertisement({required this.state, required this.category, required this.title, required this.price, required this.telephone, required this.description, this.photo, required this.user});
 
 
   Advertisement.fromMap(Map map) {
@@ -20,6 +21,7 @@ class Advertisement {
     this.telephone = map["telephone"];
     this.description = map["description"];
     this.photo = map["photo"];
+    this.user = map["user"];
   }
 
   Map<String, dynamic> toMap() {
@@ -30,6 +32,7 @@ class Advertisement {
       "price": this.price,
       "telephone": this.telephone,
       "description": this.description,
+      "user": this.user
     };
 
     map["id"] ??= this.id;
@@ -37,4 +40,9 @@ class Advertisement {
 
     return map;
   }  
+
+  @override
+  String toString() {
+    return """{${this.id}, ${this.state}, ${this.category}, ${this.title}, ${this.price}, ${this.telephone}, ${this.description}, ${this.user}}""";
+  }
 }

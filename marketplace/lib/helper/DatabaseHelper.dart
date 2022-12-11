@@ -32,23 +32,24 @@ class DatabaseHelper {
             name VARCHAR NOT NULL,
             email VARCHAR NOT NULL,
             password VARCHAR NOT NULL
-          );
-          
+          ); 
+        """;
+        await db.execute(sql);
+        sql = """
           CREATE TABLE advertisement(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             state VARCHAR(2) NOT NULL,
             category VARCHAR NOT NULL,
             title TEXT NOT NULL,
-            price REAL NOT NULL,
+            price DOUBLE NOT NULL,
             telephone VARCHAR(20) NOT NULL,
             description TEXT NOT NULL,
-            photo BLOB
+            photo BLOB,
             user INTEGER NOT NULL,
             FOREIGN KEY (user) REFERENCES user(id)
           );
-            """;
-         await db.execute(sql);
-
+        """;
+      await db.execute(sql);
       }
     );
 
@@ -64,15 +65,31 @@ class DatabaseHelper {
 
   }
 
-  getAdvertisements({User? user}) async {
+  getAdvertisementsFrom({User? user}) async {
     var database = await db;
     List advertisements;
     if (user == null) {
-      advertisements = await database.rawQuery("SELECT * FROM advertisement ORDER BY id ASC");
+      advertisements = await database.rawQuery("SELECT * FROM advertisement ORDER BY id DESC");
     } else {
       advertisements = await database.query(
         "advertisement",
-        where: "id = ?",
+        where: "user = ?",
+        whereArgs: [user.id]
+      );
+    }
+
+    return advertisements;
+  }
+
+  getAdvertisementsExclude({User? user}) async {
+    var database = await db;
+    List advertisements;
+    if (user == null) {
+      advertisements = await database.rawQuery("SELECT * FROM advertisement ORDER BY id DESC");
+    } else {
+      advertisements = await database.query(
+        "advertisement",
+        where: "user != ?",
         whereArgs: [user.id]
       );
     }
