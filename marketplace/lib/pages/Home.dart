@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:marketplace/helper/DatabaseHelper.dart';
+import 'package:marketplace/model/Advertisement.dart';
+import 'package:marketplace/model/User.dart';
+import 'package:marketplace/pages/Profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   final VoidCallback signOut;
@@ -11,6 +14,17 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _db = DatabaseHelper();
+  User? _user;
+  List<Advertisement> _advertisements = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getLogin();
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,18 +32,36 @@ class _HomeState extends State<Home> {
         title: const Text("Marketplace"),
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              signOut();
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {'My advertisements', 'Logout'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
             },
-            icon: Icon(Icons.lock_open),
-          )
+          ),
         ],
       ),
       
       body: Container(
         alignment: Alignment.center,
-        child: const Text("Home"),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: ListView.builder(
+          itemCount: _advertisements.length,
+          itemBuilder: (context, index) {
+            final item = _advertisements[index];
+
+            return ListTile(
+              title: Text(item.title!),
+              subtitle: Text("${item.category} - ${item.price}"),
+            );
+          }
+        )
       ),
     );
   }
@@ -38,5 +70,34 @@ class _HomeState extends State<Home> {
     setState(() {
       widget.signOut();
     });
+  }
+
+  getLogin() async {
+    var sp = await SharedPreferences.getInstance();
+    String name = sp.getString("user")!;
+    var res = await _db.getUsers(name: name);
+    _user = User.fromMap(res[0]);
+
+    res = await _db.getAdvertisementsExclude(user: _user);
+    _advertisements.clear();
+    for (var item in res) {
+      _advertisements.add(Advertisement.fromMap(item));
+    }
+    print(_advertisements);
+    setState(() {});
+  }
+
+  void handleClick(String option) {
+    switch (option) {
+      case "Logout":
+        signOut();
+        break;
+      case "My advertisements":
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileScreen())
+        );
+        break;
+    }
   }
 }

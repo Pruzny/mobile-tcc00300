@@ -59,7 +59,7 @@ class _LoginState extends State<Login> {
           _loginStatus = LoginStatus.signIn;
         } else if (!signUp) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User not registered!')),
+            const SnackBar(content: Text('Invalid user!')),
           );
         }
       } catch (e) {
@@ -178,8 +178,7 @@ class _LoginState extends State<Login> {
                     ElevatedButton(
                       onPressed: _submit, 
                       child: Text(signUp ? "Sign Up" : "Sign in"),
-                    )
-                  
+                    ),
                   ],
                 ),
               ),
