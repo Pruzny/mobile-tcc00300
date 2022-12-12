@@ -21,6 +21,9 @@ class _HomeState extends State<Home> {
   User? _user;
   List<Advertisement> _advertisements = [];
 
+  String? selectedState;
+  String? selectedCategory;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> possibleStates = ["State"];
+    possibleStates.addAll(states.keys);
+    List<String> possibleCategories = ["Category"];
+    possibleCategories.addAll(categories);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Marketplace"),
@@ -54,24 +62,82 @@ class _HomeState extends State<Home> {
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: ListView.builder(
-          itemCount: _advertisements.length,
-          itemBuilder: (context, index) {
-            final item = _advertisements[index];
-
-            return InkWell(
-              child: ListTile(
-                title: Text(item.title!),
-                subtitle: Text("${item.category} - ${currency.format(item.price)}"),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton<String>(
+                  hint: const Text("State"),
+                  value: selectedState,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.blue),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.blue,
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedState = value != "State" ? value : null;
+                      getAdvertisements(state: selectedState, category: selectedCategory);
+                    });
+                  },
+                  items: possibleStates.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                const Padding(padding: EdgeInsets.only(left: 40)),
+                DropdownButton<String>(
+                  hint: const Text("Category"),
+                  value: selectedCategory,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.blue),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.blue,
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedCategory = value != "Category" ? value : null;
+                      getAdvertisements(state: selectedState, category: selectedCategory);
+                    });
+                  },
+                  items: possibleCategories.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _advertisements.length,
+                itemBuilder: (context, index) {
+                  final item = _advertisements[index];
+                      
+                  return InkWell(
+                    child: ListTile(
+                      title: Text(item.title!),
+                      subtitle: Text("${item.category} - ${currency.format(item.price)}"),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AdvertisementScreen(advertisement: item))
+                      );
+                    },
+                  );
+                }
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AdvertisementScreen(advertisement: item))
-                );
-              },
-            );
-          }
+            ),
+          ]
         )
       ),
     );
@@ -88,11 +154,21 @@ class _HomeState extends State<Home> {
     String name = sp.getString("user")!;
     var res = await _db.getUsers(name: name);
     _user = User.fromMap(res[0]);
+    setState(() {});
 
-    res = await _db.getAdvertisementsExclude(user: _user);
+    getAdvertisements();
+  }
+
+  getAdvertisements({String? state, String? category}) async {
+    var res = await _db.getAdvertisementsExclude(user: _user);
     _advertisements.clear();
-    for (var item in res) {
-      _advertisements.add(Advertisement.fromMap(item));
+    for (var item in res) { 
+      Advertisement advertisement = Advertisement.fromMap(item);
+      bool matchState = state != null ? advertisement.state == state : true;
+      bool matchCategory = category != null ? advertisement.category == category : true;
+      if (matchState && matchCategory) {
+        _advertisements.add(advertisement);
+      }
     }
     setState(() {});
   }
