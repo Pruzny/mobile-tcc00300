@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
 import 'package:marketplace/model/Advertisement.dart';
 import 'package:marketplace/model/User.dart';
@@ -13,6 +14,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
   final _db = DatabaseHelper();
   User? _user;
   List<Advertisement> _advertisements = [];
@@ -54,37 +56,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: ListTile(
                 title: Text(item.title!),
-                subtitle: Text("${item.category} - ${item.price}"),
-                trailing: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text("Delete advertisement?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context), 
-                              child: const Text("Cancel")
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                _removeAdvertisement(item.id);
-                                Navigator.pop(context);
-                              }, 
-                              child: const Text("Delete")
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.only(right: 0),
-                    child: Icon(
-                      Icons.remove_circle,
-                      color: Color(0xffcc0c39),
-                    ),
+                subtitle: Text("${item.category} - ${currency.format(item.price)}"),
+                trailing: IntrinsicWidth(
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showAddScreen(advertisement: item);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 16),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Delete advertisement?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context), 
+                                    child: const Text("Cancel")
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      _removeAdvertisement(item.id);
+                                      Navigator.pop(context);
+                                    }, 
+                                    child: const Text("Delete")
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 16),
+                          child: Icon(
+                            Icons.remove_circle,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -124,11 +144,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String saveUpdateText = "";
 
     if (advertisement == null) {
+      selectedState = states.keys.first;
+      selectedCategory = categories.first;
       titleController.text = "";
+      priceController.text = "";
+      telephoneController.text = "";
       descriptionController.text = "";
       saveUpdateText = "Create";
     } else {
+      selectedState = advertisement.state!;
+      selectedCategory = advertisement.category!;
       titleController.text = advertisement.title!;
+      priceController.text = "${advertisement.price!}";
+      telephoneController.text = advertisement.telephone!;
       descriptionController.text = advertisement.description!;
       saveUpdateText = "Update";
     }

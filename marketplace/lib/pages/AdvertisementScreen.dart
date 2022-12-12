@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:marketplace/model/Advertisement.dart';
+import 'package:marketplace/pages/Profile.dart';
 
 class AdvertisementScreen extends StatefulWidget {
   Advertisement advertisement;
@@ -67,6 +68,20 @@ class _AdvertisementScreenState extends State<AdvertisementScreen> {
                 ),
                 Text(
                   advertisement.description!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(20)),
+                const Text(
+                  "Location",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                Text(
+                  states[advertisement.state]!,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
