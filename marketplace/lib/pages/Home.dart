@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
 import 'package:marketplace/model/Advertisement.dart';
 import 'package:marketplace/model/User.dart';
+import 'package:marketplace/pages/AdvertisementScreen.dart';
 import 'package:marketplace/pages/Profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
   final _db = DatabaseHelper();
   User? _user;
   List<Advertisement> _advertisements = [];
@@ -56,9 +59,17 @@ class _HomeState extends State<Home> {
           itemBuilder: (context, index) {
             final item = _advertisements[index];
 
-            return ListTile(
-              title: Text(item.title!),
-              subtitle: Text("${item.category} - ${item.price}"),
+            return InkWell(
+              child: ListTile(
+                title: Text(item.title!),
+                subtitle: Text("${item.category} - ${currency.format(item.price)}"),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdvertisementScreen(advertisement: item))
+                );
+              },
             );
           }
         )
@@ -83,7 +94,6 @@ class _HomeState extends State<Home> {
     for (var item in res) {
       _advertisements.add(Advertisement.fromMap(item));
     }
-    print(_advertisements);
     setState(() {});
   }
 

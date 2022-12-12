@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
 import 'package:marketplace/model/Advertisement.dart';
 import 'package:marketplace/model/User.dart';
+import 'package:marketplace/pages/AdvertisementScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -44,38 +45,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
           itemCount: _advertisements.length,
           itemBuilder: (context, index) {
             final item = _advertisements[index];
-            return ListTile(
-              title: Text(item.title!),
-              subtitle: Text("${item.category} - ${item.price}"),
-              trailing: GestureDetector(
-                onTap: () {
-                  showDialog(context: context,
-                  builder:(context) {
-                    return AlertDialog(
-                      title: const Text("Delete advertisement?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context), 
-                          child: const Text("Cancel")
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            _removeAdvertisement(item.id);
-                            Navigator.pop(context);
-                          }, 
-                          child: const Text("Delete")
-                        )
-
-                      ],
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdvertisementScreen(advertisement: item))
+                );
+              },
+              child: ListTile(
+                title: Text(item.title!),
+                subtitle: Text("${item.category} - ${item.price}"),
+                trailing: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Delete advertisement?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context), 
+                              child: const Text("Cancel")
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                _removeAdvertisement(item.id);
+                                Navigator.pop(context);
+                              }, 
+                              child: const Text("Delete")
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
-                );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 0),
-                  child: Icon(
-                    Icons.remove_circle,
-                    color: Color(0xffcc0c39),
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 0),
+                    child: Icon(
+                      Icons.remove_circle,
+                      color: Color(0xffcc0c39),
+                    ),
                   ),
                 ),
               ),
@@ -168,11 +177,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.blue,
                       ),
                       onChanged: (String? value) {
-                        // This is called when the user selects an item.
                         setState(() {
                           selectedCategory = value!;
                         });
-                        print(selectedCategory);
                       },
                       items: categories.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -196,14 +203,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         labelText: "Price",
                         hintText: "Ex: 500"
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                     TextField(
                       controller: telephoneController,
                       autofocus: true,
                       decoration: const InputDecoration(
                         labelText: "Phone",
-                        hintText: "Ex: (21) 987654321"
+                        hintText: "Ex: 21987654321"
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                     TextField(
                       controller: descriptionController,
@@ -223,12 +232,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    _insertUpdateAdvertisement(selectedAdvertisement: advertisement);
-                    Navigator.pop(context);
+                    String price = priceController.text;
+                    String phone = telephoneController.text;
+                    if (titleController.text != "" && descriptionController.text != "" && price != "" && phone != "") {
+                      if (validatePhone(phone)) {
+                        double? value = double.tryParse(price);
+                        if (value != null && value > 0) {
+                          _insertUpdateAdvertisement(selectedAdvertisement: advertisement);
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Invalid price!')),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Invalid phone!')),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please fill in all fields. ')),
+                      );
+                    }
                   }, 
                   child: Text(saveUpdateText)
-                )
-
+                ),
               ],
             );
           },
@@ -236,6 +265,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     );
   }
+
+  bool validatePhone(String phone) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (phone.isEmpty) {
+      return false;
+    } else if (!regExp.hasMatch(phone)) {
+      return false;
+    }
+    return true;
+  } 
 
   void _insertUpdateAdvertisement({Advertisement? selectedAdvertisement}) async{
 
