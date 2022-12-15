@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
@@ -29,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController telephoneController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   File? selectedImage;
-  String selectedImageName = "";
 
   @override
   void initState() {
@@ -156,8 +156,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       File image = File(pickedImage.files.single.path!);
       setState(() {
         selectedImage = image;
-        selectedImageName = pickedImage.files.single.name;
       });
+    }
+    await cropImage();
+  }
+
+  cropImage() async {
+    if (selectedImage != null) {
+      CroppedFile? croppedImage = await ImageCropper().cropImage(
+        sourcePath: selectedImage!.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      );
+      if (croppedImage != null) {
+        setState(() {
+          selectedImage = File(croppedImage.path);
+        });
+      }
     }
   }
 
@@ -173,7 +187,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       descriptionController.text = "";
       saveUpdateText = "Create";
       selectedImage = null;
-      selectedImageName = "";
     } else {
       selectedState = advertisement.state!;
       selectedCategory = advertisement.category!;
@@ -182,6 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       telephoneController.text = advertisement.telephone!;
       descriptionController.text = advertisement.description!;
       saveUpdateText = "Update";
+      selectedImage = advertisement.photo != null ? File.fromRawPath(base64.decode(advertisement.photo)) : null;
     }
 
     showDialog(
@@ -273,9 +287,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hintText: "Ex: 64gb"
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () => getImage(),
-                      child: const Text("Add image"),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => getImage(),
+                          child: const Text("Add image"),
+                        ),
+                        const Padding(padding: EdgeInsets.all(10)),
+                        ElevatedButton(
+                          onPressed: () {
+                            selectedImage = null;
+                          },
+                          child: const Text("Remove image"),
+                        ),
+                      ],
                     ),
                   ]
                 ),
@@ -365,6 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       selectedAdvertisement.price = price;
       selectedAdvertisement.telephone = telephone;
       selectedAdvertisement.description = description;
+      selectedAdvertisement.photo = image != null ? base64Encode(image.readAsBytesSync()) : null;
 
       int result = await _db.updateAdvertisement(selectedAdvertisement);
     }
