@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
+import 'package:marketplace/pages/AdvertisementScreen.dart';
 import 'package:marketplace/pages/Home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,6 +110,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    OutlineInputBorder border = const OutlineInputBorder(
+      borderSide: BorderSide(color: MyColors.borderColor)
+    );
     
     switch (_loginStatus) {
       case LoginStatus.notSignIn:
@@ -116,71 +120,95 @@ class _LoginState extends State<Login> {
             appBar: AppBar(
               title: const Text("Login"),
               centerTitle: true,
+              backgroundColor: MyColors.mainColor,
             ),
-            body: Container(
-              child: Center(
-                child: Column(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("Sign in"),
-                              Switch(
-                                value: signUp,
-                                onChanged: (bool value) {
-                                  // This is called when the user toggles the switch.
-                                  setState(() {
-                                    signUp = value;
-                                  });
-                                },
+            body: Center(
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Sign in"),
+                            Switch(
+                              value: signUp,
+                              onChanged: (bool value) {
+                                // This is called when the user toggles the switch.
+                                setState(() {
+                                  signUp = value;
+                                });
+                              },
+                              activeColor: MyColors.thumbColor,
+                            ),
+                            const Text("Sign Up"),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            onSaved: (newValue) => _username = newValue,
+                            cursorColor: MyColors.borderColor,
+                            decoration: const InputDecoration(
+                              labelText: "Username",
+                              labelStyle: TextStyle(color: MyColors.borderColor),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor)
                               ),
-                              const Text("Sign Up"),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextFormField(
-                              onSaved: (newValue) => _username = newValue,
-                              decoration: const InputDecoration(
-                                labelText: "Username",
-                                border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor, width: 2)
                               ),
                             ),
                           ),
-                          signUp ? Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextFormField(
-                              onSaved: (newValue) => _email = newValue,
-                              decoration: const InputDecoration(
-                                labelText: "Email",
-                                border: OutlineInputBorder(),
+                        ),
+                        signUp ? Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            onSaved: (newValue) => _email = newValue,
+                            cursorColor: MyColors.borderColor,
+                            decoration: const InputDecoration(
+                              labelText: "Email",
+                              labelStyle: TextStyle(color: MyColors.borderColor),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor)
                               ),
-                            ),
-                          ) : const Padding(padding: EdgeInsets.all(10)),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextFormField(
-                              onSaved: (newValue) => _password = newValue,
-                              decoration: const InputDecoration(
-                                labelText: "Password",
-                                border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor, width: 2)
                               ),
-                              obscureText: true,
                             ),
                           ),
-                        ]
-                      ,)
+                        ) : const Padding(padding: EdgeInsets.all(10)),
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextFormField(
+                            onSaved: (newValue) => _password = newValue,
+                            cursorColor: MyColors.borderColor,
+                            decoration: const InputDecoration(
+                              labelText: "Password",
+                              labelStyle: TextStyle(color: MyColors.borderColor),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor)
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: MyColors.borderColor, width: 2)
+                              ),
+                            ),
+                            obscureText: true,
+                          ),
+                        ),
+                      ]
+                    ,)
+                  ),
+                  ElevatedButton(
+                    onPressed: _submit, 
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(MyColors.buttonColor),
                     ),
-                    ElevatedButton(
-                      onPressed: _submit, 
-                      child: Text(signUp ? "Sign Up" : "Sign in"),
-                    ),
-                  ],
-                ),
+                    child: Text(signUp ? "Sign Up" : "Sign in"),
+                  ),
+                ],
               ),
             ),
           );

@@ -27,8 +27,12 @@ class _AdvertisementScreenState extends State<AdvertisementScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Advertisement"),
+        title: const Text(
+          "Advertisement",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        backgroundColor: MyColors.mainColor,
       ),
       body: FractionallySizedBox(
         widthFactor: 1,
@@ -62,14 +66,14 @@ class _AdvertisementScreenState extends State<AdvertisementScreen> {
                     ),
                   ),
                 ),
-                const Padding(padding: EdgeInsets.all(20)),
+                const Padding(padding: EdgeInsets.all(4)),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     "${currency.format(advertisement.price)} ",
                     style: const TextStyle(
                       fontSize: 28,
-                      color: Colors.blue,
+                      color: MyColors.textColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -127,22 +131,27 @@ class _AdvertisementScreenState extends State<AdvertisementScreen> {
           ),
         ),
       ),
-      floatingActionButton: Center(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: FloatingActionButton.extended(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            label: const Text("Copy contact"),  
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: advertisement.telephone));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Contact copied to clipboard!')),
-              );
-            },
-          ),
-        ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: MyColors.buttonColor,
+        foregroundColor: Colors.white,
+        label: const Text("Copy contact"),  
+        onPressed: () async {
+          await Clipboard.setData(ClipboardData(text: advertisement.telephone));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Contact copied to clipboard!')),
+          );
+        },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+}
+
+class MyColors {
+  static const mainColor = Color(0xff320139);
+  static const buttonColor = Color(0xff4d1d4d);
+  static const textColor = Color(0xff5f0d3b);
+  static const borderColor = Color(0xff413b6b);
+  static const trackColor = Color(0xff985277);
+  static const thumbColor = Color(0xff5c374c);
 }

@@ -16,6 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final double menuMaxHeight = 300;
   final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
   final _db = DatabaseHelper();
   User? _user;
@@ -42,6 +43,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("Marketplace"),
         centerTitle: true,
+        backgroundColor: MyColors.mainColor,
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: handleClick,
@@ -72,10 +74,11 @@ class _HomeState extends State<Home> {
                   value: selectedState,
                   icon: const Icon(Icons.arrow_downward),
                   elevation: 16,
-                  style: const TextStyle(color: Colors.blue),
+                  menuMaxHeight: menuMaxHeight,
+                  style: const TextStyle(color: MyColors.textColor),
                   underline: Container(
                     height: 2,
-                    color: Colors.blue,
+                    color: MyColors.borderColor,
                   ),
                   onChanged: (String? value) {
                     setState(() {
@@ -96,10 +99,11 @@ class _HomeState extends State<Home> {
                   value: selectedCategory,
                   icon: const Icon(Icons.arrow_downward),
                   elevation: 16,
-                  style: const TextStyle(color: Colors.blue),
+                  menuMaxHeight: menuMaxHeight,
+                  style: const TextStyle(color: MyColors.textColor),
                   underline: Container(
                     height: 2,
-                    color: Colors.blue,
+                    color: MyColors.borderColor,
                   ),
                   onChanged: (String? value) {
                     setState(() {

@@ -18,6 +18,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final double menuMaxHeight = 300;
+
   final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
   final _db = DatabaseHelper();
   User? _user;
@@ -43,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text("My advertisements"),
         centerTitle: true,
+        backgroundColor: MyColors.mainColor,
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -87,14 +90,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context), 
-                                    child: const Text("Cancel")
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(color: MyColors.textColor),
+                                    )
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       _removeAdvertisement(item.id);
                                       Navigator.pop(context);
                                     }, 
-                                    child: const Text("Delete")
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(color: MyColors.textColor),
+                                    )
                                   ),
                                 ],
                               );
@@ -118,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xff1693a7),
+        backgroundColor: MyColors.buttonColor,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),  
         onPressed: () => _showAddScreen()
@@ -215,10 +224,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: selectedState,
                       icon: const Icon(Icons.arrow_downward),
                       elevation: 16,
-                      style: const TextStyle(color: Colors.blue),
+                      menuMaxHeight: menuMaxHeight,
+                      style: const TextStyle(color: MyColors.textColor),
                       underline: Container(
                         height: 2,
-                        color: Colors.blue,
+                        color: MyColors.borderColor,
                       ),
                       onChanged: (String? value) {
                         setState(() {
@@ -236,10 +246,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       value: selectedCategory,
                       icon: const Icon(Icons.arrow_downward),
                       elevation: 16,
-                      style: const TextStyle(color: Colors.blue),
+                      menuMaxHeight: menuMaxHeight,
+                      style: const TextStyle(color: MyColors.textColor),
                       underline: Container(
                         height: 2,
-                        color: Colors.blue,
+                        color: MyColors.borderColor,
                       ),
                       onChanged: (String? value) {
                         setState(() {
@@ -258,16 +269,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       autofocus: true,
                       decoration: const InputDecoration(
                         labelText: "Title",
-                        hintText: "Ex: smartphone"
+                        hintText: "Ex: smartphone",
+                        labelStyle: TextStyle(color: MyColors.textColor),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: MyColors.borderColor
+                          ),
+                        ),
                       ),
+                      cursorColor: MyColors.borderColor,
                     ),
                     TextField(
                       controller: priceController,
                       autofocus: true,
                       decoration: const InputDecoration(
                         labelText: "Price",
-                        hintText: "Ex: 500"
+                        hintText: "Ex: 500",
+                        labelStyle: TextStyle(color: MyColors.textColor),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: MyColors.borderColor
+                          ),
+                        ),
                       ),
+                      cursorColor: MyColors.borderColor,
                       keyboardType: TextInputType.number,
                     ),
                     TextField(
@@ -275,8 +302,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       autofocus: true,
                       decoration: const InputDecoration(
                         labelText: "Phone",
-                        hintText: "Ex: 21987654321"
+                        hintText: "Ex: 21987654321",
+                        labelStyle: TextStyle(color: MyColors.textColor),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: MyColors.borderColor
+                          ),
+                        ),
                       ),
+                      cursorColor: MyColors.borderColor,
                       keyboardType: TextInputType.number,
                     ),
                     TextField(
@@ -284,13 +319,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       autofocus: true,
                       decoration: const InputDecoration(
                         labelText: "Description",
-                        hintText: "Ex: 64gb"
+                        hintText: "Ex: 64gb",
+                        labelStyle: TextStyle(color: MyColors.textColor),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 2,
+                            color: MyColors.borderColor
+                          ),
+                        ),
                       ),
+                      cursorColor: MyColors.borderColor,
                     ),
                     Row(
                       children: [
                         ElevatedButton(
                           onPressed: () => getImage(),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(MyColors.buttonColor),
+                          ),
                           child: const Text("Add image"),
                         ),
                         const Padding(padding: EdgeInsets.all(10)),
@@ -298,6 +344,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () {
                             selectedImage = null;
                           },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(MyColors.buttonColor),
+                          ),
                           child: const Text("Remove image"),
                         ),
                       ],
@@ -308,7 +357,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context), 
-                  child: const Text("Cancel")
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: MyColors.textColor)
+                  )
                 ),
                 TextButton(
                   onPressed: () {
@@ -336,7 +388,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     }
                   }, 
-                  child: Text(saveUpdateText)
+                  child: Text(
+                    saveUpdateText,
+                    style: const TextStyle(color: MyColors.textColor)
+                  )
                 ),
               ],
             );
