@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marketplace/helper/DatabaseHelper.dart';
@@ -25,6 +28,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController priceController = TextEditingController();
   TextEditingController telephoneController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  File? selectedImage;
+  String selectedImageName = "";
 
   @override
   void initState() {
@@ -140,6 +145,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {});
   }
 
+  getImage() async {
+    var pickedImage = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png'],
+      allowMultiple: false,
+    );
+
+    if (pickedImage != null) {
+      File image = File(pickedImage.files.single.path!);
+      setState(() {
+        selectedImage = image;
+        selectedImageName = pickedImage.files.single.name;
+      });
+    }
+  }
+
   void _showAddScreen({Advertisement? advertisement}) {
     String saveUpdateText = "";
 
@@ -151,6 +172,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       telephoneController.text = "";
       descriptionController.text = "";
       saveUpdateText = "Create";
+      selectedImage = null;
+      selectedImageName = "";
     } else {
       selectedState = advertisement.state!;
       selectedCategory = advertisement.category!;
@@ -250,6 +273,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hintText: "Ex: 64gb"
                       ),
                     ),
+                    ElevatedButton(
+                      onPressed: () => getImage(),
+                      child: const Text("Add image"),
+                    ),
                   ]
                 ),
               ),
@@ -311,6 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double? price = double.tryParse(priceController.text);
     String telephone = telephoneController.text;
     String description = descriptionController.text;
+    File? image = selectedImage;
 
     if (selectedAdvertisement == null) {
       if (price != null) {
@@ -322,6 +350,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           telephone: telephone,
           description: description,
           user: _user!.id,
+          photo: image != null ? base64Encode(image.readAsBytesSync()) : null,
         );
         int result = await _db.insertAdvertisement(advertisement);
       } else {

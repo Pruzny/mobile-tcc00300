@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -7,9 +9,9 @@ import 'package:marketplace/model/Advertisement.dart';
 import 'package:marketplace/pages/Profile.dart';
 
 class AdvertisementScreen extends StatefulWidget {
-  Advertisement advertisement;
+  final Advertisement advertisement;
 
-  AdvertisementScreen({super.key, required this.advertisement});
+  const AdvertisementScreen({super.key, required this.advertisement});
 
   @override
   State<AdvertisementScreen> createState() => _AdvertisementScreenState();
@@ -17,6 +19,7 @@ class AdvertisementScreen extends StatefulWidget {
 
 class _AdvertisementScreenState extends State<AdvertisementScreen> {
   final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
+  final double imageSize = 240;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,25 @@ class _AdvertisementScreenState extends State<AdvertisementScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  width: imageSize,
+                  height: imageSize,
+                  color: Colors.grey.shade300,
+                  child: Center(
+                    child: advertisement.photo == null ? const Text(
+                      "No image",
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),
+                    ) : Image.memory(
+                      base64Decode(advertisement.photo),
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                const Padding(padding: EdgeInsets.all(20)),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
