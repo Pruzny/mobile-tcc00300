@@ -6,7 +6,7 @@
 
 ## Screens:
 1. **Login:** sign in and sign up options. Only unique names and emails are allowed.
-2. **Home (Marketplace):** lists all advertisements from other users. Filters are available for searching specific products.
+2. **Home (Marketplace):** lists all advertisements from other users (all users if joined as guest). Filters are available for searching specific products.
 3. **Profile (My advertisement):** lists all advertisements from the logged-in user. The user can create, read, update and delete owned advertisements.
 4. **Advertisement:** opened when tapping an advertisement. This screen shows all informations about the selected product.
 
@@ -18,10 +18,10 @@ You can select both state and category filters to search advertisements, and als
 
 ## Login
 
-Select sign in or sign up options by switching the button. Names and emails must be unique.
+Select sign in or sign up options by switching the button. Names and emails must be unique. It's also possible to join as a guest.
 
-![SignInScreen](https://i.imgur.com/VxqqkqB.jpg)
-![SignUpScreen](https://i.imgur.com/vS5DHuy.jpg)
+![SignInScreen](https://i.imgur.com/cSkEaGb.jpg)
+![SignUpScreen](https://i.imgur.com/adLfiLg.jpg)
 
 ## Home
 

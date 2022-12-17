@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   final VoidCallback signOut;
-  const Home({super.key, required this.signOut});
+  final bool signedIn;
+  const Home({super.key, required this.signOut, required this.signedIn});
 
   @override
   State<Home> createState() => _HomeState();
@@ -20,6 +21,7 @@ class _HomeState extends State<Home> {
   final currency = NumberFormat.simpleCurrency(locale: "pt_BR");
   final _db = DatabaseHelper();
   User? _user;
+  bool? signedIn;
   List<Advertisement> _advertisements = [];
 
   String? selectedState;
@@ -28,6 +30,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    signedIn = widget.signedIn;
     getLogin();
   }
   
@@ -48,12 +51,21 @@ class _HomeState extends State<Home> {
           PopupMenuButton<String>(
             onSelected: handleClick,
             itemBuilder: (BuildContext context) {
-              return {'My advertisements', 'Logout'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
+              if (signedIn!) {
+                return {'My advertisements', 'Logout'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              } else {
+                return {'Exit'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              }
             },
           ),
         ],
@@ -164,7 +176,7 @@ class _HomeState extends State<Home> {
   }
 
   getAdvertisements({String? state, String? category}) async {
-    var res = await _db.getAdvertisementsExclude(user: _user);
+    var res = await _db.getAdvertisementsExclude(user: signedIn! ? _user : null);
     _advertisements.clear();
     for (var item in res) { 
       Advertisement advertisement = Advertisement.fromMap(item);
@@ -188,6 +200,9 @@ class _HomeState extends State<Home> {
           MaterialPageRoute(builder: (context) => const ProfileScreen())
         );
         break;
+      case "Exit":
+        Navigator.pop(context);
+      break;
     }
   }
 }

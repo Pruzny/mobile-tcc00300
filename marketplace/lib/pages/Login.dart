@@ -208,12 +208,27 @@ class _LoginState extends State<Login> {
                     ),
                     child: Text(signUp ? "Sign Up" : "Sign in"),
                   ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home(signOut: signOut, signedIn: false))
+                        );
+                      }, 
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(MyColors.buttonColor),
+                      ),
+                      child: const Text("Guest"),
+                    ),
+                  ),
                 ],
               ),
             ),
           );
         case LoginStatus.signIn:
-          return Home(signOut: signOut);
+          return Home(signOut: signOut, signedIn: true);
     }
     
   }
